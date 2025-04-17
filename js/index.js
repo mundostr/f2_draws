@@ -9,6 +9,7 @@ const spinButton = document.getElementById('spinButton');
 const nextRoundButton = document.getElementById('nextRoundButton');
 const selectedContestantsDisplay = document.getElementById('selectedContestants');
 const loadingMessage = document.getElementById('loadingMessage');
+const installButton = document.getElementById('install-button');
 
 let classes = [];
 let currentClass = null;
@@ -272,7 +273,6 @@ window.addEventListener('beforeinstallprompt', (event) => {
 
     checkIfInstalled();
 
-    const installButton = document.getElementById('install-button');
     if (installButton) {
         installButton.style.display = 'block';
 
