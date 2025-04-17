@@ -230,6 +230,19 @@ async function loadClasses() {
     }
 }
 
+const checkIfInstalled = () => {
+    const isIOSInstalled = window.navigator.standalone; // iOS
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches; // android, desktop
+
+    if (isIOSInstalled || isStandalone) {
+        if (installButton) installButton.style.display = 'none';
+    } else {
+        if (installButton) installButton.style.display = 'block';
+    }
+};
+
+
+// MAIN
 classSelect.addEventListener('change', (e) => {
     const selectedClassName = e.target.value;
     if (!selectedClassName) return;
@@ -244,8 +257,6 @@ classSelect.addEventListener('change', (e) => {
 spinButton.addEventListener('click', spinSlots);
 nextRoundButton.addEventListener('click', startNewRound);
 
-
-// MAIN
 if ('serviceWorker' in navigator && INSTALLABLE) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
@@ -253,44 +264,33 @@ if ('serviceWorker' in navigator && INSTALLABLE) {
         }, function(err) {
             console.log('Service Worker registration failed:', err);
         });
+
+        checkIfInstalled();
+    });
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
+    
+        checkIfInstalled();
+    
+        if (installButton) {
+            installButton.style.display = 'block';
+    
+            installButton.addEventListener('click', () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choice) => {
+                    if (choice.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                    installButton.style.display = 'none'; // Hide after installation
+                });
+            });
+        }
     });
 }
-
-const checkIfInstalled = () => {
-    const isIOSInstalled = window.navigator.standalone; // iOS
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches; // android, desktop
-
-    if (isIOSInstalled || isStandalone) {
-        if (installButton) installButton.style.display = 'none';
-    } else {
-        if (installButton) installButton.style.display = 'block';
-    }
-};
-
-window.addEventListener('beforeinstallprompt', (event) => {
-    event.preventDefault();
-    deferredPrompt = event;
-
-    checkIfInstalled();
-
-    if (installButton) {
-        installButton.style.display = 'block';
-
-        installButton.addEventListener('click', () => {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choice) => {
-                if (choice.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                } else {
-                    console.log('User dismissed the install prompt');
-                }
-                deferredPrompt = null;
-                installButton.style.display = 'none'; // Hide after installation
-            });
-        });
-    }
-});
-
-window.addEventListener("load", checkIfInstalled);
 
 loadClasses();
