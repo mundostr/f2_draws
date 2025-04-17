@@ -1,0 +1,50 @@
+[
+    {
+        "class": "Velocidad FA",
+        "rounds": 1,
+        "contestants": [
+            { "number": 1, "name": "Schwindt, Gustavo" },
+            { "number": 2, "name": "Rodriguez, Julio" },
+            { "number": 3, "name": "Peyronel, Walter" },
+            { "number": 4, "name": "Scándalo, Cristian" },
+            { "number": 5, "name": "Paz, René" },
+            { "number": 6, "name": "Leys, José Luis" },
+            { "number": 7, "name": "Melendez, Sergio" }
+        ]
+    },
+    {
+        "class": "Acrobacia F2B",
+        "rounds": 3,
+        "contestants": [
+            { "number": 1, "name": "Rodriguez, Roberto" },
+            { "number": 2, "name": "Rodriguez, Julio" },
+            { "number": 3, "name": "Herbón, Ricardo" },
+            { "number": 4, "name": "Jawerbaum, Gabriel" },
+            { "number": 5, "name": "Novelli, Dino" },
+            { "number": 6, "name": "Cismondi, Gabriel" },
+            { "number": 7, "name": "Perez, Luciano" },
+            { "number": 8, "name": "Fernandez, Mauro" },
+            { "number": 9, "name": "Rinaldi, Juan" },
+            { "number": 10, "name": "Chacón, Claudio" }
+        ]
+    },
+    {
+        "class": "Acrobacia Promo",
+        "rounds": 3,
+        "contestants": [
+            { "number": 1, "name": "Leone, Sebastián" },
+            { "number": 2, "name": "Peyronel, Walter" },
+            { "number": 3, "name": "Otro, Más" }
+        ]
+    },
+    {
+        "class": "Slow Combat",
+        "rounds": 1,
+        "contestants": [
+            { "number": 1, "name": "Leone, Sebastián" },
+            { "number": 2, "name": "Melendez, Sergio" },
+            { "number": 3, "name": "Nilo, Claudio" },
+            { "number": 4, "name": "Rinaldi, Juan" }
+        ]
+    }
+]
