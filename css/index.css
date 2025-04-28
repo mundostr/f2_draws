@@ -142,8 +142,8 @@ h2 {
         top: 0;
         width: 100%;
     }
-    /* Only add page breaks if multiple rounds */
-    .print-round:not(:last-child) {
+    /* Only apply page breaks for multiple rounds */
+    .multiple-rounds .print-round:not(:last-child) {
         page-break-after: always;
     }
     .no-print {

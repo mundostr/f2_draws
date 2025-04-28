@@ -321,26 +321,25 @@ const printResults = () => {
     printSection.id = 'printSection';
     printSection.style.margin = '1em';
     
-    /* const printTitle = document.createElement('h2');
-    printTitle.textContent = currentClass.class;
-    printTitle.style.textAlign = 'left';
-    printSection.appendChild(printTitle); */
+    if (currentClass.rounds > 1) printSection.classList.add('multiple-rounds');
 
     const rounds = {};
     selectedContestants.forEach((item) => {
-        if (!rounds[item.round]) rounds[item.round] = [];
+        if (!rounds[item.round]) {
+            rounds[item.round] = [];
+        }
         rounds[item.round].push(item);
     });
 
     Object.entries(rounds).forEach(([round, items]) => {
         const roundSection = document.createElement('div');
-        if (currentClass.rounds > 1) roundSection.classList.add('print-round');
+        roundSection.classList.add('print-round');
         
         const roundHeader = document.createElement('h3');
         roundHeader.innerHTML = `<b>${currentClass.class}</b> - `;
         roundHeader.innerHTML += currentClass.rounds > 1 ? `Orden de vuelo ronda ${round}` : 'Orden de vuelo rondas';
         roundHeader.style.textAlign = 'left';
-        roundHeader.style.marginBottom = '1em';
+        roundHeader.style.marginBottom = '20px';
         roundSection.appendChild(roundHeader);
 
         items.sort((a, b) => a.position - b.position)
