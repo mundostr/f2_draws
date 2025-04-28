@@ -17,10 +17,17 @@
             </div>
 
             <div class="row mt-4">
-                <img src="./img/nac_vc_arg_2025_flyer.jpeg" alt="Nac VC Arg2025" title="Nac VC Arg2025" class="img-fluid mb-3">
+                <img src="./img/nac_vc_arg_2025_flyer.jpeg" alt="Nac VC Arg2025" title="Nac VC Arg2025" class="img-fluid p-0 m-0 mb-3">
+            </div>
+
+            <div class="row mt-4" style="position: relative;">
                 <h1 id="classTitle" class="display-4"></h1>
                 <div id="roundInfo" class="round-info"></div>
-                <h2 id="subtitle">Sorteos orden de vuelo categorías</h2>
+                <h2 id="subtitle">Sorteos categorías</h2>
+                <select id="drawModeSelect" class="form-select form-select-lg mb-3" style="width: 250px; position: absolute; top: 0; right: 0;">
+                    <option value="full">Ronda completa</option>
+                    <option value="single">Individual</option>
+                </select>
             </div>
         </div>
         
@@ -37,6 +44,7 @@
                     <div class="slot-machine" id="slotMachine"></div>
                     <button id="spinButton" class="btn btn-success btn-lg px-4 py-2" disabled>Girar bolillero</button>
                     <button id="nextRoundButton" class="btn btn-success btn-lg px-4 py-2" disabled>Siguiente ronda</button>
+                    <button id="printButton" class="btn btn-success btn-lg px-4 py-2" disabled>Imprimir</button>
                 </div>
                 
                 <div class="selected-contestants">

@@ -3,48 +3,45 @@
         "class": "Velocidad FA",
         "rounds": 1,
         "contestants": [
-            { "number": 1, "name": "Schwindt, Gustavo" },
-            { "number": 2, "name": "Rodriguez, Julio" },
-            { "number": 3, "name": "Peyronel, Walter" },
-            { "number": 4, "name": "Scándalo, Cristian" },
-            { "number": 5, "name": "Paz, René" },
-            { "number": 6, "name": "Leys, José Luis" },
-            { "number": 7, "name": "Melendez, Sergio" }
+            { "number": 1, "name": "Schwindt, Gustavo", "alias": "SCH" },
+            { "number": 2, "name": "Rodriguez, Julio", "alias": "JROD" },
+            { "number": 3, "name": "Paz, René", "alias": "PAZ" },
+            { "number": 4, "name": "Cismondi, Gabriel", "alias": "CIS" },
+            { "number": 5, "name": "Melendez, Sergio", "alias": "MEL" }
         ]
     },
     {
         "class": "Acrobacia F2B",
         "rounds": 3,
         "contestants": [
-            { "number": 1, "name": "Rodriguez, Roberto" },
-            { "number": 2, "name": "Rodriguez, Julio" },
-            { "number": 3, "name": "Herbón, Ricardo" },
-            { "number": 4, "name": "Jawerbaum, Gabriel" },
-            { "number": 5, "name": "Novelli, Dino" },
-            { "number": 6, "name": "Cismondi, Gabriel" },
-            { "number": 7, "name": "Perez, Luciano" },
-            { "number": 8, "name": "Fernandez, Mauro" },
-            { "number": 9, "name": "Rinaldi, Juan" },
-            { "number": 10, "name": "Chacón, Claudio" }
+            { "number": 1, "name": "Sainz, Juan Francisco", "alias": "SAI" },
+            { "number": 2, "name": "Rinaldi, Juan", "alias": "RIN" },
+            { "number": 3, "name": "Poduje, Miguel", "alias": "POD" },
+            { "number": 4, "name": "Jawerbaum, Gabriel", "alias": "JAW" },
+            { "number": 5, "name": "Rodriguez, Julio", "alias": "JROD" },
+            { "number": 6, "name": "Perez, Luciano", "alias": "PER" },
+            { "number": 7, "name": "Fernandez, Mauro", "alias": "FER" },
+            { "number": 8, "name": "Herbón, Ricardo", "alias": "HER" },
+            { "number": 9, "name": "Cismondi, Gabriel", "alias": "CIS" },
+            { "number": 10, "name": "Rodriguez, Roberto", "alias": "RROD" },
+            { "number": 11, "name": "Novelli, Dino", "alias": "NOV" }
         ]
     },
     {
         "class": "Acrobacia Promo",
         "rounds": 3,
         "contestants": [
-            { "number": 1, "name": "Leone, Sebastián" },
-            { "number": 2, "name": "Peyronel, Walter" },
-            { "number": 3, "name": "Otro, Más" }
+            { "number": 1, "name": "Haack, Ernesto", "alias": "HAA" },
+            { "number": 2, "name": "Gimenez, Raúl", "alias": "GIM" },
+            { "number": 3, "name": "Minnozzi, Marcelo", "alias": "MIN" },
+            { "number": 4, "name": "Espeche, Jerónimo", "alias": "ESP" }
         ]
     },
     {
         "class": "Slow Combat",
         "rounds": 1,
         "contestants": [
-            { "number": 1, "name": "Leone, Sebastián" },
-            { "number": 2, "name": "Melendez, Sergio" },
-            { "number": 3, "name": "Nilo, Claudio" },
-            { "number": 4, "name": "Rinaldi, Juan" }
+            { "number": 1, "name": "Nilo, Claudio", "alias": "NIL" }
         ]
     }
 ]

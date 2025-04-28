@@ -1,4 +1,4 @@
-const INSTALLABLE = true;
+const INSTALLABLE = false;
 const classTitle = document.getElementById('classTitle');
 const subtitle = document.getElementById('subtitle');
 const roundInfo = document.getElementById('roundInfo');
@@ -10,6 +10,8 @@ const nextRoundButton = document.getElementById('nextRoundButton');
 const selectedContestantsDisplay = document.getElementById('selectedContestants');
 const loadingMessage = document.getElementById('loadingMessage');
 const installButton = document.getElementById('install-button');
+const printButton = document.getElementById('printButton');
+const drawModeSelect = document.getElementById('drawModeSelect');
 
 let classes = [];
 let currentClass = null;
@@ -19,6 +21,8 @@ let originalContestants = [];
 let selectedContestants = [];
 let hitsCounter = 0;
 let isSpinning = false;
+let isFullDrawMode = true;
+let previousRoundOrder = [];
 
 const createSlots = () => {
     slotMachine.innerHTML = '';
@@ -27,7 +31,7 @@ const createSlots = () => {
     contestants.forEach((contestant) => {
         const slot = document.createElement('div');
         slot.classList.add('slot');
-        slot.textContent = contestant.number;
+        slot.textContent = contestant.alias
         slot.dataset.number = contestant.number;
         slot.addEventListener('click', handleSlotClick);
         slotMachine.appendChild(slot);
@@ -37,7 +41,7 @@ const createSlots = () => {
 };
 
 const handleSlotClick = (e) => {
-    if (isSpinning || contestants.length === 0) return;
+    if (isSpinning || contestants.length === 0  || isFullDrawMode) return;
 
     const slot = e.target;
     const number = parseInt(slot.dataset.number, 10);
@@ -52,20 +56,19 @@ const handleSlotClick = (e) => {
         name: selectedContestant.name,
     });
 
-    // Remove from available contestants
     contestants = contestants.filter((c) => c.number !== number);
 
     slot.remove();
     updateSelectedContestantsDisplay();
 
-    // Check if round is complete
     if (contestants.length === 0) {
         spinButton.disabled = true;
         spinButton.textContent = 'Sorteo finalizado';
 
-        // Enable next round button if there are more rounds
         if (currentRound < currentClass.rounds) {
             nextRoundButton.disabled = false;
+        } else {
+            printButton.disabled = false;
         }
     }
 };
@@ -74,9 +77,7 @@ const shuffleArray = (array) => {
     return array.slice().sort(() => Math.random() - 0.5);
 };
 
-const spinSlots = () => {
-    if (contestants.length === 0 || isSpinning) return;
-
+const singleDraw = () => {
     isSpinning = true;
     hitsCounter++;
 
@@ -114,10 +115,8 @@ const spinSlots = () => {
 
             if (contestants.length > 0) {
                 spinButton.disabled = false;
-                spinButton.textContent = 'Girar bolillero';
             } else {
                 spinButton.disabled = true;
-                spinButton.textContent = 'Sorteo finalizado';
 
                 if (currentRound < currentClass.rounds) {
                     nextRoundButton.disabled = false;
@@ -127,10 +126,79 @@ const spinSlots = () => {
     }, intervalDuration);
 };
 
+const fullDraw = () => {
+    if (isSpinning) return;
+    
+    isSpinning = true;
+    spinButton.disabled = true;
+    spinButton.textContent = 'Sorteando...';
+    
+    const shuffledContestants = shuffleArray(contestants);
+    const slots = document.querySelectorAll('.slot');
+    const animationDuration = 3000;
+    const contestantDrawDuration = 250;
+    const spinInterval = 50;
+    let startTime = Date.now();
+    
+    let spinIntervalId = setInterval(() => {
+        slots.forEach(slot => {
+            const randomIndex = Math.floor(Math.random() * contestants.length);
+            slot.textContent = contestants[randomIndex]?.number || '';
+        });
+        
+        if (Date.now() - startTime >= animationDuration) {
+            spinButton.textContent = "Finalizado";
+            clearInterval(spinIntervalId);
+            drawContestantsOneByOne();
+            if (currentRound == currentClass.rounds) printButton.disabled = false;
+        }
+    }, spinInterval);
+    
+    const drawContestantsOneByOne = () => {
+        let currentIndex = 0;
+        
+        const drawInterval = setInterval(() => {
+            if (currentIndex >= shuffledContestants.length) {
+                clearInterval(drawInterval);
+                isSpinning = false;
+                
+                contestants = [];
+                slotMachine.innerHTML = '';
+                
+                if (currentRound < currentClass.rounds) nextRoundButton.disabled = false;
+                
+                return;
+            }
+            
+            const contestant = shuffledContestants[currentIndex];
+            slots[0].textContent = contestant.number;
+            
+            hitsCounter++;
+            selectedContestants.push({
+                round: currentRound,
+                position: hitsCounter,
+                name: contestant.name,
+            });
+            
+            currentIndex++;
+            
+            setTimeout(() => {
+                slots[0].remove();
+                updateSelectedContestantsDisplay();
+            }, contestantDrawDuration);
+            
+        }, contestantDrawDuration + 200);
+    };
+};
+
+const spinSlots = () => {
+    if (contestants.length === 0 || isSpinning) return;
+    isFullDrawMode ? fullDraw() : singleDraw();
+};
+
 const updateSelectedContestantsDisplay = () => {
     selectedContestantsDisplay.innerHTML = '';
 
-    // Group by round
     const rounds = {};
     selectedContestants.forEach((item) => {
         if (!rounds[item.round]) {
@@ -139,11 +207,10 @@ const updateSelectedContestantsDisplay = () => {
         rounds[item.round].push(item);
     });
 
-    // Display each round's results
     for (const [round, items] of Object.entries(rounds)) {
         const roundHeader = document.createElement('h4');
         roundHeader.classList.add('mt-3', 'mb-2');
-        roundHeader.textContent = `Ronda ${round}:`;
+        roundHeader.textContent = currentClass.rounds === 1 ? `Rondas` : `Ronda ${round}`;
         selectedContestantsDisplay.appendChild(roundHeader);
 
         items
@@ -156,7 +223,6 @@ const updateSelectedContestantsDisplay = () => {
             });
     }
 
-    // Scroll to bottom
     selectedContestantsDisplay.scrollIntoView({ behavior: 'smooth', block: 'end' });
 };
 
@@ -164,6 +230,14 @@ const startNewRound = () => {
     currentRound++;
     hitsCounter = 0;
     contestants = [...originalContestants];
+    
+    let newOrder = contestants.map(c => c.number);
+    while (JSON.stringify(newOrder) === JSON.stringify(previousRoundOrder) && contestants.length > 1) {
+        contestants = shuffleArray(contestants);
+        newOrder = contestants.map(c => c.number);
+    }
+    
+    previousRoundOrder = [...newOrder];
     selectedContestantsDisplay.innerHTML = '';
 
     roundInfo.textContent = `Ronda ${currentRound} de ${currentClass.rounds}`;
@@ -182,6 +256,7 @@ const loadClassData = (selectedClass) => {
     contestants = [...originalContestants];
     selectedContestants = [];
     isSpinning = false;
+    previousRoundOrder = [];
 
     classTitle.textContent = selectedClass.class;
     roundInfo.textContent = `Ronda ${currentRound} de ${selectedClass.rounds}`;
@@ -205,7 +280,7 @@ async function loadClasses() {
         classSelect.innerHTML = '';
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
-        defaultOption.textContent = 'Seleccione una categoría';
+        defaultOption.textContent = 'Seleccione';
         defaultOption.disabled = true;
         defaultOption.selected = true;
         classSelect.appendChild(defaultOption);
@@ -241,6 +316,50 @@ const checkIfInstalled = () => {
     }
 };
 
+const printResults = () => {
+    const printSection = document.createElement('div');
+    printSection.id = 'printSection';
+    printSection.style.margin = '1em';
+    
+    /* const printTitle = document.createElement('h2');
+    printTitle.textContent = currentClass.class;
+    printTitle.style.textAlign = 'left';
+    printSection.appendChild(printTitle); */
+
+    const rounds = {};
+    selectedContestants.forEach((item) => {
+        if (!rounds[item.round]) rounds[item.round] = [];
+        rounds[item.round].push(item);
+    });
+
+    Object.entries(rounds).forEach(([round, items]) => {
+        const roundSection = document.createElement('div');
+        if (currentClass.rounds > 1) roundSection.classList.add('print-round');
+        
+        const roundHeader = document.createElement('h3');
+        roundHeader.innerHTML = `<b>${currentClass.class}</b> - `;
+        roundHeader.innerHTML += currentClass.rounds > 1 ? `Orden de vuelo ronda ${round}` : 'Orden de vuelo rondas';
+        roundHeader.style.textAlign = 'left';
+        roundHeader.style.marginBottom = '1em';
+        roundSection.appendChild(roundHeader);
+
+        items.sort((a, b) => a.position - b.position)
+            .forEach((item) => {
+                const contestantItem = document.createElement('div');
+                contestantItem.style.marginBottom = '10px';
+                contestantItem.style.fontSize = '18px';
+                contestantItem.innerHTML = `<strong>${item.position}.</strong> ${item.name}`;
+                roundSection.appendChild(contestantItem);
+            });
+
+        printSection.appendChild(roundSection);
+    });
+
+    document.body.appendChild(printSection);
+    window.print();
+    document.body.removeChild(printSection);
+};
+
 
 // MAIN
 classSelect.addEventListener('change', (e) => {
@@ -251,11 +370,17 @@ classSelect.addEventListener('change', (e) => {
     if (selectedClass) {
         loadClassData(selectedClass);
         subtitle.style.display = 'none';
+        printButton.disabled = true;
     }
+});
+
+drawModeSelect.addEventListener('change', (e) => {
+    isFullDrawMode = e.target.value === 'full';
 });
 
 spinButton.addEventListener('click', spinSlots);
 nextRoundButton.addEventListener('click', startNewRound);
+printButton.addEventListener('click', printResults);
 
 if ('serviceWorker' in navigator && INSTALLABLE) {
     window.addEventListener('load', function() {
@@ -286,7 +411,7 @@ if ('serviceWorker' in navigator && INSTALLABLE) {
                         console.log('User dismissed the install prompt');
                     }
                     deferredPrompt = null;
-                    installButton.style.display = 'none'; // Hide after installation
+                    installButton.style.display = 'none';
                 });
             });
         }
