@@ -1,4 +1,4 @@
-const INSTALLABLE = false;
+const INSTALLABLE = true;
 const classTitle = document.getElementById('classTitle');
 const subtitle = document.getElementById('subtitle');
 const roundInfo = document.getElementById('roundInfo');
